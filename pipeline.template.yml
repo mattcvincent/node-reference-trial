@@ -1,0 +1,11 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: Pipeline for Product Service
+Parameters:
+  RepoToken:
+    Type: String
+    NoEcho: true
+    Description: OAuth Token for the github repository
+Resources:
+  ArtifactStorage:
+    Type: "AWS::S3::Bucket"
+
