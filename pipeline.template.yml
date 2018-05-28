@@ -133,7 +133,7 @@ Resources:
               #Do not put secret values here as they are visible in the code pipeline GUI
               ParameterOverrides: !Sub |
                 {
-                  "VpcId": "vpc-868750e3",
+                  "VpcId": "vpc-425c1227",
                   "SubnetIds": "subnet-ba1ba0e3",
                   "Image": { "Fn::GetParam" : [ "buildResults", "outputProperties.json", "image" ] }
                 }
