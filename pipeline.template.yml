@@ -134,7 +134,7 @@ Resources:
               ParameterOverrides: !Sub |
                 {
                   "VpcId": "vpc-79e9ab1c",
-                  "SubnetIds": "subnet-0b41f852,subnet-33b22a44"
+                  "SubnetIds": "subnet-0b41f852,subnet-33b22a44",
                   "Image": { "Fn::GetParam" : [ "buildResults", "outputProperties.json", "image" ] }
                 }
           #This is the same as the stage above except the stack name is different and the ActionMode is different
@@ -159,6 +159,6 @@ Resources:
               ParameterOverrides: !Sub |
                 {
                   "VpcId": "vpc-79e9ab1c",
-                  "SubnetIds": "subnet-0b41f852,subnet-33b22a44"
+                  "SubnetIds": "subnet-0b41f852,subnet-33b22a44",
                   "Image": { "Fn::GetParam" : [ "buildResults", "outputProperties.json", "image" ] }
                 }
