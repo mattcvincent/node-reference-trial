@@ -81,7 +81,7 @@ Resources:
               awslogs-region: !Ref AWS::Region
               awslogs-stream-prefix: ProductService
     Service: 
-      Type: AWS::ECS::Service
+      Type: "AWS::ECS::Service"
       Properties: 
         Cluster: !Ref ECSCluster
         # This is new with fargate (obviously)
