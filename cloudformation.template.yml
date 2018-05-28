@@ -112,6 +112,10 @@ Resources:
       SecurityGroupIngress:
         - IpProtocol: "tcp"
           CidrIp: "0.0.0.0/0"
+          FromPort: 80
+          ToPort: 80
+        - IpProtocol: "tcp"
+          CidrIp: "0.0.0.0/0"
           FromPort: 443
           ToPort: 443
   AppSecurityGroup:
@@ -143,8 +147,8 @@ Resources:
       - Type: forward
         TargetGroupArn: !Ref TargetGroup
       LoadBalancerArn: !Ref LoadBalancer
-      Port: 443
-      Protocol: HTTPS
+      Port: 80
+      Protocol: HTTP
   TargetGroup:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     DependsOn: 
@@ -152,8 +156,8 @@ Resources:
     Properties:
       TargetType: ip #the default is "instance" but we must use ip to forward to fargate
       VpcId: !Ref VpcId
-      Protocol: HTTP
-      Port: 80
+      Protocol: HTTP # do not change to HTTPS
+      Port: 3000
       HealthCheckPath: /hello
       HealthCheckIntervalSeconds: 10
       HealthCheckTimeoutSeconds: 5
