@@ -92,8 +92,6 @@ Resources:
       TaskDefinition: !Ref TaskDefinition
   #    We haven't setup a load balancer yet so this part is commented out. 
   #    The Service references the loadbalancer rather than the other way around
-      DependsOn:
-        - LoadBalancer
       LoadBalancers: 
         - ContainerName: ProductService
           ContainerPort: 3000
