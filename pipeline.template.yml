@@ -133,8 +133,8 @@ Resources:
               #Do not put secret values here as they are visible in the code pipeline GUI
               ParameterOverrides: !Sub |
                 {
-                  "VpcId": "vpc-badfd8c1",
-                  "SubnetIds": "subnet-e9d6ced6,subnet-009b595c,subnet-8cca01eb,subnet-08ab3d42",
+                  "VpcId": "vpc-27888f5c",
+                  "SubnetIds": "subnet-26f6ee19,subnet-70b57e17,subnet-f358ceb9,subnet-e79456bb",
                   "Image": { "Fn::GetParam" : [ "buildResults", "outputProperties.json", "image" ] }
                 }
           #This is the same as the stage above except the stack name is different and the ActionMode is different
@@ -158,7 +158,7 @@ Resources:
               Capabilities: CAPABILITY_IAM
               ParameterOverrides: !Sub |
                 {
-                  "VpcId": "vpc-badfd8c1",
-                  "SubnetIds": "subnet-e9d6ced6,subnet-009b595c,subnet-8cca01eb,subnet-08ab3d42",
+                  "VpcId": "vpc-27888f5c",
+                  "SubnetIds": "subnet-26f6ee19,subnet-70b57e17,subnet-f358ceb9,subnet-e79456bb",
                   "Image": { "Fn::GetParam" : [ "buildResults", "outputProperties.json", "image" ] }
                 }
