@@ -123,7 +123,7 @@ Resources:
       IpProtocol: "tcp"
       FromPort: 1
       ToPort: 65000
-      GroupName: "node-reference-trial-mcv"
+      GroupId: "sg-6b094123"
   LoadBalancer:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
     DependsOn: 
