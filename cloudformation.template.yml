@@ -117,7 +117,6 @@ Resources:
   AppSecurityGroup:
     Type: "AWS::EC2::SecurityGroup"
     Properties: 
-      GroupName: "NodeReferenceSG"
       GroupDescription: "Node Reference App Security Group"
       VpcId: !Ref VpcId
   LoadBalancerToAppAccess: #This rule allows the load balancer to call into our "default" security group within the VPC
