@@ -112,8 +112,8 @@ Resources:
       SecurityGroupIngress:
         - IpProtocol: "tcp"
           CidrIp: "0.0.0.0/0"
-          FromPort: 80
-          ToPort: 80
+          FromPort: 443
+          ToPort: 443
   AppSecurityGroup:
     Type: "AWS::EC2::SecurityGroup"
     Properties: 
@@ -143,8 +143,8 @@ Resources:
       - Type: forward
         TargetGroupArn: !Ref TargetGroup
       LoadBalancerArn: !Ref LoadBalancer
-      Port: 80
-      Protocol: HTTP
+      Port: 443
+      Protocol: HTTPS
   TargetGroup:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     DependsOn: 
