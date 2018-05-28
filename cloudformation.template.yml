@@ -118,11 +118,6 @@ Resources:
           CidrIp: "0.0.0.0/0"
           FromPort: 443
           ToPort: 443
-  AppSecurityGroup:
-    Type: "AWS::EC2::SecurityGroup"
-    Properties: 
-      GroupDescription: "Node Reference App Security Group"
-      VpcId: !Ref VpcId
   LoadBalancerToAppAccess: #This rule allows the load balancer to call into our "default" security group within the VPC
     Type: "AWS::EC2::SecurityGroupIngress"
     Properties:
@@ -130,7 +125,7 @@ Resources:
       IpProtocol: "tcp"
       FromPort: 1
       ToPort: 65000
-      GroupId: !Ref AppSecurityGroup
+      GroupId: !Ref LoadBalancerSG
   LoadBalancer:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
     DependsOn: 
