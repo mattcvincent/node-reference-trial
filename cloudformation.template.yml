@@ -129,7 +129,7 @@ Resources:
       IpProtocol: "tcp"
       FromPort: 1
       ToPort: 65000
-      GroupId: "sg-6b094123"
+      GroupId: !Ref AppSecurityGroup
   LoadBalancer:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
     DependsOn: 
