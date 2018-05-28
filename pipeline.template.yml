@@ -8,4 +8,37 @@ Parameters:
 Resources:
   ArtifactStorage:
     Type: "AWS::S3::Bucket"
-
+  PipelineRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: "Allow"
+            Action: "sts:AssumeRole"
+            Principal:
+              Service: "codebuild.amazonaws.com"
+          - Effect: "Allow" 
+            Action: "sts:AssumeRole"
+            Principal:
+              Service: "codepipeline.amazonaws.com"
+          - Effect: "Allow" 
+            Action: "sts:AssumeRole"
+            Principal:
+              Service: "cloudformation.amazonaws.com"
+      ManagedPolicyArns:
+        - "arn:aws:iam::aws:policy/AWSCodeBuildAdminAccess"
+        - "arn:aws:iam::aws:policy/AdministratorAccess"
+  DockerRepo:
+    Type: "AWS::ECR::Repository"
+    Properties:
+      RepositoryPolicyText:
+        Version: "2012-10-17"
+        Statement:
+          - Sid: AllowPushPull
+            Effect: Allow
+            Action:
+              - "ecr:*"
+            Principal:
+              AWS:
+                - !GetAtt PipelineRole.Arn
