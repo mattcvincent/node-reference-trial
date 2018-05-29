@@ -11,6 +11,30 @@ Parameters:
     Type: List<AWS::EC2::Subnet::Id>
     Description: List of subnet Ids to run in
 Resources:
+  LoadBalancerSG: #This security group allows us to whitelist traffic from the internet to our load balancer
+    Type: "AWS::EC2::SecurityGroup"
+    Properties:
+      GroupDescription: "Load balancer security group"
+      VpcId: !Ref VpcId      
+      SecurityGroupIngress:
+        - IpProtocol: "tcp"
+          CidrIp: "0.0.0.0/0"
+          FromPort: 80
+          ToPort: 80
+        - IpProtocol: "tcp"
+          CidrIp: "0.0.0.0/0"
+          FromPort: 443
+          ToPort: 443
+  AppSG: #This security group holds the application
+    Type: "AWS::EC2::SecurityGroupIngress"
+    Properties:
+      GroupDescription: "Product service security group"
+      VpcId: !Ref VpcId 
+      SecurityGroupIngress:
+        - IpProtocol: "tcp"
+          SourceSecurityGroupId: !Ref LoadBalancerSG
+          FromPort: 1
+          ToPort: 65000
   ECSCluster:
     Type: "AWS::ECS::Cluster"
     Properties: {}
@@ -100,40 +124,12 @@ Resources:
         AwsvpcConfiguration:
           AssignPublicIp: ENABLED
           Subnets: !Ref SubnetIds
-          # The security groups associated with the task or service. If you do not specify a security group, the default security group for the VPC is used.
           SecurityGroups:
-            - !Ref ServiceSecurityGroup
+            - !Ref AppSG
       # This is optional (These are the default values)
       DeploymentConfiguration:
         MinimumHealthyPercent: 100 #Never allow less than this percentage of servers to be running during a deploy
         MaximumPercent: 200 # Allow double the number of servers to be running during a deployment
-  LoadBalancerSG: #This security group allows us to whitelist traffic from the internet to our load balancer
-    Type: "AWS::EC2::SecurityGroup"
-    Properties:
-      GroupDescription: "Load balancer security group"
-      VpcId: !Ref VpcId      
-      SecurityGroupIngress:
-        - IpProtocol: "tcp"
-          CidrIp: "0.0.0.0/0"
-          FromPort: 80
-          ToPort: 80
-        - IpProtocol: "tcp"
-          CidrIp: "0.0.0.0/0"
-          FromPort: 443
-          ToPort: 443
-  ServiceSecurityGroup:
-    Type: "AWS::EC2::SecurityGroup"
-    Properties: 
-      GroupDescription: "Node Reference App Security Group"
-      VpcId: !Ref VpcId
-  LoadBalancerToAppAccess: #This rule allows the load balancer to call into our "default" security group within the VPC
-    Type: "AWS::EC2::SecurityGroupIngress"
-    Properties:
-      SourceSecurityGroupId: !Ref LoadBalancerSG
-      IpProtocol: "tcp"
-      FromPort: 1
-      ToPort: 65000
-      GroupId: !Ref ServiceSecurityGroup
   LoadBalancer:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
     DependsOn: 
