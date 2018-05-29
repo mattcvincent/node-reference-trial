@@ -139,6 +139,9 @@ Resources:
         - !Ref LoadBalancerSG
   LBListener:
     Type: AWS::ElasticLoadBalancingV2::Listener
+    DependsOn:
+      - LoadBalancer
+      - TargetGroup
     Properties:
       DefaultActions:
       - Type: forward
