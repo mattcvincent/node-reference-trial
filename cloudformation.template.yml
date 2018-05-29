@@ -132,8 +132,6 @@ Resources:
         MaximumPercent: 200 # Allow double the number of servers to be running during a deployment
   LoadBalancer:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
-    DependsOn: 
-      - LoadBalancerToAppAccess
     Properties:
       Scheme: internet-facing
       Subnets: !Ref SubnetIds
