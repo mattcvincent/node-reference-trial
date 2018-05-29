@@ -28,7 +28,6 @@ Resources:
   AppSG: #This security group holds the application
     Type: "AWS::EC2::SecurityGroupIngress"
     Properties:
-      GroupDescription: "Product service security group"
       VpcId: !Ref VpcId 
       SecurityGroupIngress:
         - IpProtocol: "tcp"
