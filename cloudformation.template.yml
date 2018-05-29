@@ -26,8 +26,9 @@ Resources:
           FromPort: 443
           ToPort: 443
   AppSG: #This security group holds the application
-    Type: "AWS::EC2::SecurityGroupIngress"
+    Type: "AWS::EC2::SecurityGroup"
     Properties:
+      GroupDescription: "Application security group"
       VpcId: !Ref VpcId 
       SecurityGroupIngress:
         - IpProtocol: "tcp"
