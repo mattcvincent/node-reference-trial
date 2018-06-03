@@ -10,6 +10,12 @@ Parameters:
   SubnetIds:
     Type: List<AWS::EC2::Subnet::Id>
     Description: List of subnet Ids to run in
+  BaseDomain:
+    Type: String
+    Description: Domain name to place this application under as a subdomain
+  Subdomain:
+    Type: String
+    Description: Subdomain to deploy this app to
 Resources:
   LoadBalancerSG: #This security group allows us to whitelist traffic from the internet to our load balancer
     Type: "AWS::EC2::SecurityGroup"
@@ -147,8 +153,8 @@ Resources:
       - Type: forward
         TargetGroupArn: !Ref TargetGroup
       LoadBalancerArn: !Ref LoadBalancer
-      Port: 80
-      Protocol: HTTP
+      Port: 443
+      Protocol: HTTPS
   TargetGroup:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     DependsOn: 
@@ -166,6 +172,15 @@ Resources:
       TargetGroupAttributes:
         - Key:  deregistration_delay.timeout_seconds
           Value:  30
+  DNSRecord:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneName: !Sub "${BaseDomain}."
+      Name: !Sub "${Subdomain}.${BaseDomain}"
+      Type: A
+      AliasTarget:
+      HostedZoneId: !GetAtt "LoadBalancer.CanonicalHostedZoneID"
+      DNSName: !GetAtt "LoadBalancer.DNSName"
 Outputs:
   LoadBalancerDNS:
     Value: !GetAtt LoadBalancer.DNSName
