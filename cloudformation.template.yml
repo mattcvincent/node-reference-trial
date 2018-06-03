@@ -179,8 +179,8 @@ Resources:
       Name: !Sub "${Subdomain}.${BaseDomain}"
       Type: A
       AliasTarget:
-      HostedZoneId: !GetAtt "LoadBalancer.CanonicalHostedZoneID"
-      DNSName: !GetAtt "LoadBalancer.DNSName"
+        HostedZoneId: !GetAtt "LoadBalancer.CanonicalHostedZoneID"
+        DNSName: !GetAtt "LoadBalancer.DNSName"
 Outputs:
   LoadBalancerDNS:
     Value: !GetAtt LoadBalancer.DNSName

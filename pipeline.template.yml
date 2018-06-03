@@ -135,7 +135,9 @@ Resources:
                 {
                   "VpcId": "vpc-27888f5c",
                   "SubnetIds": "subnet-26f6ee19,subnet-70b57e17,subnet-f358ceb9,subnet-e79456bb",
-                  "Image": { "Fn::GetParam" : [ "buildResults", "outputProperties.json", "image" ] }
+                  "Image": { "Fn::GetParam" : [ "buildResults", "outputProperties.json", "image" ] },
+                  "BaseDomain": "sourceallies.com",
+                  "Subdomain": "theproducts"
                 }
           #This is the same as the stage above except the stack name is different and the ActionMode is different
         - Name: Deploy_PROD
@@ -160,5 +162,7 @@ Resources:
                 {
                   "VpcId": "vpc-27888f5c",
                   "SubnetIds": "subnet-26f6ee19,subnet-70b57e17,subnet-f358ceb9,subnet-e79456bb",
-                  "Image": { "Fn::GetParam" : [ "buildResults", "outputProperties.json", "image" ] }
+                  "Image": { "Fn::GetParam" : [ "buildResults", "outputProperties.json", "image" ] },
+                  "BaseDomain": "sourceallies.com",
+                  "Subdomain": "theproducts"
                 }
