@@ -143,6 +143,8 @@ Resources:
       Subnets: !Ref SubnetIds
       SecurityGroups:
         - !Ref LoadBalancerSG
+      Certificates:
+        - CertificateArn: !Ref Certificate
   LBListener:
     Type: AWS::ElasticLoadBalancingV2::Listener
     DependsOn:
@@ -181,6 +183,13 @@ Resources:
       AliasTarget:
         HostedZoneId: !GetAtt "LoadBalancer.CanonicalHostedZoneID"
         DNSName: !GetAtt "LoadBalancer.DNSName"
+  Certificate:
+    Type: AWS::CertificateManager::Certificate
+    Properties:
+      DomainName: !Sub "${Subdomain}.${BaseDomain}"
+      DomainValidationOptions:
+        - DomainName: !Sub "${Subdomain}.${BaseDomain}"
+          ValidationDomain: !Ref BaseDomain
 Outputs:
   LoadBalancerDNS:
     Value: !GetAtt LoadBalancer.DNSName
