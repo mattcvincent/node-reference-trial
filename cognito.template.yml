@@ -189,3 +189,18 @@ Resources:
           RequireNumbers: true
           MinimumLength: "8"
           RequireUppercase: true
+  UserPoolClient:
+    Type: "AWS::Cognito::UserPoolClient"
+    Properties:
+      ClientName: !Sub ${AuthName}-client
+      GenerateSecret: false
+      UserPoolId: !Ref UserPool
+Outputs:
+  UserPoolId:
+    Value: !Ref UserPool
+    Export:
+      Name: "UserPool::Id"
+  UserPoolClientId:
+    Value: !Ref UserPoolClient
+    Export:
+      Name: "UserPoolClient::Id"
