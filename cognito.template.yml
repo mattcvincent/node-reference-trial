@@ -189,11 +189,13 @@ Resources:
           RequireNumbers: true
           MinimumLength: "8"
           RequireUppercase: true
+  # All attributes are readable and writable by default because 
+  # no "ReadAttributes" or "WriteAttributes" are specified.
   UserPoolClient:
     Type: "AWS::Cognito::UserPoolClient"
     Properties:
       ClientName: !Sub ${AuthName}-client
-      GenerateSecret: false
+      GenerateSecret: true
       UserPoolId: !Ref UserPool
 Outputs:
   UserPoolId:
