@@ -10,13 +10,17 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "aws-sdk": "^2.259.1",
     "jwks-rsa": "^1.2.1",
     "koa": "^2.5.1",
     "koa-bodyparser": "^4.2.0",
     "koa-jwt": "^3.3.2",
-    "koa-router": "^7.4.0"
+    "koa-router": "^7.4.0",
+    "shortid": "^2.2.8"
   },
   "devDependencies": {
-    "jasmine": "^3.1.0"
+    "chai": "^4.1.2",
+    "jasmine": "^3.1.0",
+    "proxyquire": "^2.0.1"
   }
 }
