@@ -201,7 +201,7 @@ Resources:
       DomainValidationOptions:
         - DomainName: !Sub "${Subdomain}.${BaseDomain}"
           ValidationDomain: !Ref BaseDomain
-ProductsTable:
+  ProductsTable:
     Type: "AWS::DynamoDB::Table"
     Properties:
       AttributeDefinitions:
