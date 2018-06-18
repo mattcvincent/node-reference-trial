@@ -120,7 +120,7 @@ Resources:
             - Name: PRODUCTS_TABLE_NAME
               Value: !Ref ProductsTable
             - Name: AWS_REGION
-              Value: !Ref "AWS::RegionId"
+              Value: !Ref "AWS::Region"
   Service: 
     Type: "AWS::ECS::Service"
     Properties: 
