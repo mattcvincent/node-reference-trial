@@ -76,6 +76,10 @@ Resources:
             Action: 
               - logs:*
             Resource: !GetAtt LogGroup.Arn
+          - Effect: "Allow"
+            Action: 
+              - dynamodb:*
+            Resource: !GetAtt ProductsTable.Arn
   # Create a place for logs to go.
   LogGroup:
     Type: "AWS::Logs::LogGroup"
@@ -113,6 +117,10 @@ Resources:
           Environment: 
             - Name: USER_POOL_ID
               Value: !ImportValue "UserPool::Id"
+            - Name: PRODUCTS_TABLE_NAME
+              Value: !Ref ProductsTable
+            - Name: AWS_REGION
+              Value: !Ref "AWS::RegionId"
   Service: 
     Type: "AWS::ECS::Service"
     Properties: 
@@ -193,6 +201,22 @@ Resources:
       DomainValidationOptions:
         - DomainName: !Sub "${Subdomain}.${BaseDomain}"
           ValidationDomain: !Ref BaseDomain
+ProductsTable:
+    Type: "AWS::DynamoDB::Table"
+    Properties:
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: "HASH"
+      ProvisionedThroughput: 
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1
 Outputs:
   LoadBalancerDNS:
     Value: !GetAtt LoadBalancer.DNSName
+  ProductsTable:
+    Value: !Ref ProductsTable
+    Export:
+      Name: "ProductsTable::Id"
