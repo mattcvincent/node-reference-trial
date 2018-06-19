@@ -3,6 +3,8 @@ const proxyquire = require('proxyquire');
 describe('products', function () {
     describe('createProduct', function () {
         beforeEach(function () {
+            process.env.PRODUCTS_TABLE_NAME = 'Products';
+
             this.product = {
                 name: 'widget',
                 imageURL: 'https://example.com/widget.jpg'
@@ -17,13 +19,19 @@ describe('products', function () {
             this.awsResult = {
                 promise: () => Promise.resolve()
             };
-            this.documentClient = {
+            const documentClient = this.documentClient = {
                 put: (params) => this.awsResult
             };
             spyOn(this.documentClient, 'put').and.callThrough();
 
             this.createProduct = proxyquire('./createProduct', {
-                "./documentClient": this.documentClient
+                'aws-sdk': {
+                    DynamoDB: {
+                        DocumentClient: function() {
+                            return documentClient;
+                        }
+                    }
+                }
             });
         });
 
