@@ -1,6 +1,7 @@
 {
     "spec_files": [
-        "**/*.spec.js"
+        "*.spec.js",
+        "!(node_modules)/**/*.spec.js"
     ]
 }
 
