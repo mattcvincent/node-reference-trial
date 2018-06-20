@@ -6,7 +6,9 @@ const jwksRsa = require('jwks-rsa');
 
 const app = new Koa();
 
-console.log(process.env.USER_POOL_ID);
+console.log(`USER_POOL_ID: ${process.env.USER_POOL_ID}`);
+console.log(`PRODUCTS_TABLE_NAME: ${process.env.PRODUCTS_TABLE_NAME}`);
+console.log(`AWS_REGION: ${process.env.AWS_REGION}`);
 app.use(createAuthMiddleware()
     .unless({path: '/hello'}));
 app.use(bodyParser());
