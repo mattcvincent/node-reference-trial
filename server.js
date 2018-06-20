@@ -6,6 +6,7 @@ const jwksRsa = require('jwks-rsa');
 
 const app = new Koa();
 
+console.log(process.env.USER_POOL_ID);
 app.use(createAuthMiddleware()
     .unless({path: '/hello'}));
 app.use(bodyParser());
