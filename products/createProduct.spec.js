@@ -24,6 +24,9 @@ describe('products', function () {
             };
             spyOn(this.documentClient, 'put').and.callThrough();
 
+            this.validateProduct = (product) => undefined;
+            spyOn(this, 'validateProduct').and.callThrough();
+
             this.createProduct = proxyquire('./createProduct', {
                 'aws-sdk': {
                     DynamoDB: {
@@ -31,15 +34,10 @@ describe('products', function () {
                             return documentClient;
                         }
                     }
-                }
-            });
-            this.validateProduct = (product) => undefined;
-            spyOn(this, 'validateProduct').and.callThrough();
-
-            this.createProduct = proxyquire('./createProduct', {
-                "./documentClient": this.documentClient,
+                },
                 './validateProduct': this.validateProduct,
             });
+
         });
 
         it('should pass the correct TableName to documentClient.put', async function () {
