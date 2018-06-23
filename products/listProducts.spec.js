@@ -1,3 +1,5 @@
+'use strict';
+
 const proxyquire = require('proxyquire');
 
 describe('products', function () {
@@ -50,30 +52,30 @@ describe('products', function () {
             await this.listProducts(this.context);
             expect(this.documentClient.scan.calls.argsFor(0)[0].Limit).toEqual(25);
         });
-    });
-    describe('pagination', function() {
-        it('should not return a Link header if the returned LastEvaluatedKey is undefined', async function() {
-            delete this.response.LastEvaluatedKey;
-            await this.listProducts(this.context);
-            expect(this.context.response.headers.Link).toBeUndefined();
-        });
+        describe('pagination', function() {
+            it('should not return a Link header if the returned LastEvaluatedKey is undefined', async function() {
+                delete this.response.LastEvaluatedKey;
+                await this.listProducts(this.context);
+                expect(this.context.response.headers.Link).toBeUndefined();
+            });
 
-        it('should return a properly formatted link header when LastEvaluatedKey is returned', async function() {
-            this.response.LastEvaluatedKey = {
-                id: 'id123'
-            };
-            await this.listProducts(this.context);
-            expect(this.context.response.headers.link)
-                .toEqual('</products?_lek=id123>; rel="next"');
-        });
+            it('should return a properly formatted link header when LastEvaluatedKey is returned', async function() {
+                this.response.LastEvaluatedKey = {
+                    id: 'id123'
+                };
+                await this.listProducts(this.context);
+                expect(this.context.response.headers.link)
+                    .toEqual('</products?_lek=id123>; rel="next"');
+            });
 
-        it('should pass the _lek param to Dyanmo if this is a pagination request', async function() {
-            this.context.query = {
-                _lek: 'key123'
-            };
-            await this.listProducts(this.context);
-            expect(this.documentClient.scan.calls.argsFor(0)[0].ExclusiveStartKey)
-                .toEqual({id: 'key123'});
+            it('should pass the _lek param to Dyanmo if this is a pagination request', async function() {
+                this.context.query = {
+                    _lek: 'key123'
+                };
+                await this.listProducts(this.context);
+                expect(this.documentClient.scan.calls.argsFor(0)[0].ExclusiveStartKey)
+                    .toEqual({id: 'key123'});
+            });
         });
     });
 });
