@@ -1,0 +1,17 @@
+version: 0.2
+env:
+  variables: {}
+phases:
+  pre_build:
+    commands:
+      - $(aws ecr get-login --no-include-email --region $AWS_DEFAULT_REGION)
+      # Load the url of the image we want to run
+      - export RELEASE_IMAGE_URL=$(cat RELEASE_IMAGE_URL.txt)
+  build:
+    commands:
+      - echo "About to exec $RELEASE_IMAGE_URL to $BASE_URL"
+      - |
+        docker run \
+          -e BASE_URL \
+          $RELEASE_IMAGE_URL npm run integration-test
+
