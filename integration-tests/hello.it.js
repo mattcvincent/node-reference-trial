@@ -2,7 +2,7 @@ const fetch = require('node-fetch');
 
 describe('hello', function() {
     beforeAll(async function() {
-        this.baseURL = `${process.env.BASE_URL}/hello` || 'http://localhost:3000/hello';
+        this.baseURL = `${process.env.BASE_URL}hello` || 'http://localhost:3000/hello';
         console.log(this.baseURL);
         this.response = await fetch(this.baseURL);
         this.responseBody = this.response.ok && await this.response.json();
