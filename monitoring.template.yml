@@ -1,0 +1,95 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: Monitoring dashboards
+Parameters:
+  ProductServiceStackName:
+    Type: String
+    Description: Name of the product service cloudformation stack
+  AlarmEmail:
+    Type: String
+    Description: Email address that should be alerted of Alarms
+Resources:
+  AlarmTopic: 
+    Type: "AWS::SNS::Topic"
+    Properties: {}
+  Dashboard:
+    Type: "AWS::CloudWatch::Dashboard"
+    Properties:
+      DashboardName: "My_Dashboard"
+      DashboardBody:
+        Fn::Sub: 
+          - |
+            {
+              "widgets": [
+                {
+                  "type": "metric",
+                  "width": 24,
+                  "properties": {
+                    "title": "Average Response Time",
+                    "period": 60,
+                    "stat": "p95",
+                    "region": "${AWS::Region}",
+                    "metrics": [
+                      ["AWS/ApplicationELB", "TargetResponseTime", "LoadBalancer", "${ProductServiceLoadBalancerFullName}", {"label": "Product Service"}]
+                    ]
+                  }
+                },
+                {
+                  "type": "metric",
+                  "width": 24,
+                  "properties": {
+                    "title": "Request Counts",
+                    "period": 60,
+                    "stat": "Sum",
+                    "region": "${AWS::Region}",
+                    "metrics": [
+                      ["AWS/ApplicationELB", "HTTPCode_Target_5XX_Count", "LoadBalancer", "${ProductServiceLoadBalancerFullName}", {"label": "Product Service 5xx"}]           
+                    ]
+                  }
+                }
+              ]
+            }
+          - ProductServiceLoadBalancerFullName: 
+              Fn::ImportValue: !Sub "${ProductServiceStackName}:LoadBalancerFullName"
+  ProductServiceResponseTimeAlarm:
+    Type: "AWS::CloudWatch::Alarm"
+    Properties:
+      AlarmDescription: Product Service response time over 100ms  
+      Namespace: "AWS/ApplicationELB"
+      MetricName: "TargetResponseTime"
+      Dimensions:
+        - Name: "LoadBalancer"
+          Value: 
+            Fn::ImportValue: !Sub "${ProductServiceStackName}:LoadBalancerFullName"
+      ExtendedStatistic: p95
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      Threshold: 100
+      Period: 60
+      EvaluationPeriods: 1
+      ActionsEnabled: true #This can be set to false in non-prod environments if you don't want to be alerted
+      AlarmActions:
+        - !Ref AlarmTopic
+  ProductServiceErrorAlarm:
+    Type: "AWS::CloudWatch::Alarm"
+    Properties:
+      AlarmDescription: Product Service producing 5xx responses
+      Namespace: "AWS/ApplicationELB"
+      MetricName: "HTTPCode_Target_5XX_Count"
+      Dimensions:
+        - Name: "LoadBalancer"
+          Value: 
+            Fn::ImportValue: !Sub "${ProductServiceStackName}:LoadBalancerFullName"
+      Statistic: Sum
+      ComparisonOperator: GreaterThanThreshold
+      Threshold: 0
+      Period: 3600 # 1 Hour
+      EvaluationPeriods: 1
+      ActionsEnabled: true #This can be set to false in non-prod environments if you don't want to be alerted
+      AlarmActions:
+        - !Ref AlarmTopic
+  EmailAlarmSubscription:
+    Type: "AWS::SNS::Subscription"
+    Properties:
+      TopicArn: !Ref AlarmTopic
+      Protocol: email
+      Endpoint: !Ref AlarmEmail
+
