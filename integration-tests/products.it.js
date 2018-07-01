@@ -6,7 +6,7 @@ const getAuthorizationHeader = require('./getAuthorizationHeader');
 describe('/products', function() {
     describe('saving a product', function() {
         beforeAll(async function createNewProduct() {
-            this.baseURL = process.env.BASE_URL || 'http://localhost:3000/';
+            this.baseURL = process.env.BASE_URL || 'http://localhost:3000';
             const authHeader = await getAuthorizationHeader();
 
             const product = {
