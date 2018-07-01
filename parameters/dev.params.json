@@ -1,0 +1,9 @@
+{
+    "Parameters": {
+        "VpcId": "vpc-27888f5c",
+        "SubnetIds": "subnet-26f6ee19,subnet-f358ceb9,subnet-70b57e17,subnet-e79456bb",
+        "Subdomain": "theproducts",
+        "BaseDomain": "sourceallies.com",
+        "Image": "RELEASE_IMAGE_URL"
+    }
+}
