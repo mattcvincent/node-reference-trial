@@ -126,6 +126,7 @@ Resources:
               ActionMode: REPLACE_ON_FAILURE 
               #this special syntax represents the file we put in our "artifacts" section of the buildspec.yml
               TemplatePath: buildResults::cloudformation.template.yml
+              TemplateConfiguration: buildResults::dev.params.json
               RoleArn: !GetAtt PipelineRole.Arn
               Capabilities: CAPABILITY_IAM
           - Name: IntegrationTest
@@ -156,6 +157,7 @@ Resources:
           #              #Create or update the stack, but don't delete it if it fails
           #              ActionMode: CREATE_UPDATE 
           #              TemplatePath: buildResults::cloudformation.template.yml
+          #              TemplateConfiguration: buildResults::prod.params.json
           #              RoleArn: !GetAtt PipelineRole.Arn
           #              Capabilities: CAPABILITY_IAM
   IntegrationTest:
