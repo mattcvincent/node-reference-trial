@@ -224,3 +224,11 @@ Outputs:
       Value: !GetAtt LoadBalancer.LoadBalancerFullName
       Export:
           Name: !Sub "${AWS::StackName}:LoadBalancerFullName"
+  BaseDomain:
+    Value: !Ref BaseDomain
+    Export:
+      Name: !Sub "${AWS::StackName}:BaseDomain"
+  SubDomain:
+    Value: !Ref SubDomain
+    Export:
+      Name: !Sub "${AWS::StackName}:SubDomain"
