@@ -184,7 +184,7 @@ Resources:
           - Name: CLIENT_ID
             Value: "5jltlmcc3n1nrhc6v4mdendunt"
           - Name: ENCRYPTED_CLIENT_SECRET
-            Value: "AQICAHjOlvZz08eCx3Hk7g0fAtOEcVqsjMBSOcwb3x/SXUUg6AH1Yv9JA6lLcAmet2Bne22MAAAAlTCBkgYJKoZIhvcNAQcGoIGEMIGBAgEAMHwGCSqGSIb3DQEHATAeBglghkgBZQMEAS4wEQQMLYBsb2YJPCkRQMrQAgEQgE+o+lY9keQ8sKysUymfeVGOGNHkCw07kXVl4oP4j/TguXgYHywINEMr8QiWGoT66eKlW5L8Vzz8yfwqFWbJwilxKQ0nQvJ/rVjenE2EAF/p"
+            Value: "AQICAHjOlvZz08eCx3Hk7g0fAtOEcVqsjMBSOcwb3x/SXUUg6AG7TFm4Oy79nre47FiNRbg7AAAAlTCBkgYJKoZIhvcNAQcGoIGEMIGBAgEAMHwGCSqGSIb3DQEHATAeBglghkgBZQMEAS4wEQQMYY4p6S8tP8CJAtL7AgEQgE8RxBR9WUT+1wgqDxf9e9NC93gCyn1+RFlvBu7YD/ynGoyfnbc3XbHjvU+pLu3NkIdib1VGvOKrDG49yLlDF1vO98kMltSz0hSve4xnx6UG"
           - Name: TOKEN_ENDPOINT
             Value: "https://theproducts.auth.us-east-1.amazoncognito.com/oauth2/token"
       Artifacts:
