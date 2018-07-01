@@ -128,17 +128,6 @@ Resources:
               TemplatePath: buildResults::cloudformation.template.yml
               RoleArn: !GetAtt PipelineRole.Arn
               Capabilities: CAPABILITY_IAM
-              #Because the image URL is not static between builds, we need to inject it here so that it can change each build
-              #this special syntax looks up the value we placed in the outputProperties.json file and passes it to our template
-              #Do not put secret values here as they are visible in the code pipeline GUI
-              ParameterOverrides: !Sub |
-                {
-                  "VpcId": "vpc-27888f5c",
-                  "SubnetIds": "subnet-26f6ee19,subnet-70b57e17,subnet-f358ceb9,subnet-e79456bb",
-                  "Image": { "Fn::GetParam" : [ "buildResults", "outputProperties.json", "image" ] },
-                  "BaseDomain": "sourceallies.com",
-                  "Subdomain": "theproducts"
-                }
           - Name: IntegrationTest
             RunOrder: 2
             ActionTypeId:
@@ -151,32 +140,24 @@ Resources:
             Configuration:
               ProjectName: !Ref IntegrationTest
           #This is the same as the stage above except the stack name is different and the ActionMode is different
-        - Name: Deploy_PROD
-          Actions:
-          - Name: Deploy
-            RoleArn: !GetAtt PipelineRole.Arn
-            ActionTypeId:
-              Category: Deploy
-              Owner: AWS
-              Provider: CloudFormation
-              Version: '1'
-            InputArtifacts:
-              - Name: buildResults
-            Configuration:
-              StackName: ProductService-PROD 
-              #Create or update the stack, but don't delete it if it fails
-              ActionMode: CREATE_UPDATE 
-              TemplatePath: buildResults::cloudformation.template.yml
-              RoleArn: !GetAtt PipelineRole.Arn
-              Capabilities: CAPABILITY_IAM
-              ParameterOverrides: !Sub |
-                {
-                  "VpcId": "vpc-27888f5c",
-                  "SubnetIds": "subnet-26f6ee19,subnet-70b57e17,subnet-f358ceb9,subnet-e79456bb",
-                  "Image": { "Fn::GetParam" : [ "buildResults", "outputProperties.json", "image" ] },
-                  "BaseDomain": "sourceallies.com",
-                  "Subdomain": "theproducts"
-                }
+          #        - Name: Deploy_PROD
+          #          Actions:
+          #          - Name: Deploy
+          #            RoleArn: !GetAtt PipelineRole.Arn
+          #            ActionTypeId:
+          #              Category: Deploy
+          #              Owner: AWS
+          #              Provider: CloudFormation
+          #              Version: '1'
+          #            InputArtifacts:
+          #              - Name: buildResults
+          #            Configuration:
+          #              StackName: ProductService-PROD 
+          #              #Create or update the stack, but don't delete it if it fails
+          #              ActionMode: CREATE_UPDATE 
+          #              TemplatePath: buildResults::cloudformation.template.yml
+          #              RoleArn: !GetAtt PipelineRole.Arn
+          #              Capabilities: CAPABILITY_IAM
   IntegrationTest:
     Type: AWS::CodeBuild::Project
     DependsOn:
