@@ -139,6 +139,17 @@ Resources:
                   "BaseDomain": "sourceallies.com",
                   "Subdomain": "theproducts"
                 }
+          - Name: IntegrationTest
+            RunOrder: 2
+            ActionTypeId:
+              Category: Test
+              Owner: AWS
+              Provider: CodeBuild
+              Version: 1
+            InputArtifacts:
+              - Name: buildResults
+            Configuration:
+              ProjectName: !Ref IntegrationTest
           #This is the same as the stage above except the stack name is different and the ActionMode is different
         - Name: Deploy_PROD
           Actions:
@@ -166,3 +177,22 @@ Resources:
                   "BaseDomain": "sourceallies.com",
                   "Subdomain": "theproducts"
                 }
+  IntegrationTest:
+    Type: AWS::CodeBuild::Project
+    DependsOn:
+      - PipelineRole
+    Properties:
+      ServiceRole: !GetAtt PipelineRole.Arn
+      Source:
+        Type: CODEPIPELINE
+        BuildSpec: integration.buildspec.yml
+      Environment:
+        Type: LINUX_CONTAINER
+        ComputeType: BUILD_GENERAL1_SMALL
+        Image: aws/codebuild/docker:17.09.0
+        EnvironmentVariables:
+          - Name: BASE_URL
+            Value: "https://theproducts.sourceallies.com/"
+      Artifacts:
+        Type: CODEPIPELINE
+
