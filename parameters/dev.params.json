@@ -4,6 +4,7 @@
         "SubnetIds": "subnet-26f6ee19,subnet-f358ceb9,subnet-70b57e17,subnet-e79456bb",
         "Subdomain": "theproducts",
         "BaseDomain": "sourceallies.com",
-        "Image": "RELEASE_IMAGE_URL"
+        "Image": "RELEASE_IMAGE_URL",
+        "PipelineAdminArn": "arn:aws:iam::079431020456:user/mvincent"
     }
 }
