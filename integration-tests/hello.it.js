@@ -3,6 +3,7 @@ const fetch = require('node-fetch');
 describe('hello', function() {
     beforeAll(async function() {
         this.baseURL = process.env.BASE_URL || 'http://localhost:3000';
+        console.log(this.baseURL);
         this.response = await fetch(this.baseURL);
         this.responseBody = this.response.ok && await this.response.json();
         console.log('Response ', this.responseBody);
@@ -17,7 +18,7 @@ describe('hello', function() {
     });
 
     it('should return the correct message', function (){
-        expect(this.responseBody.message).toEqual('healthy');
+        expect(this.responseBody.message).toEqual('Hello World2');
     });
 });
 
