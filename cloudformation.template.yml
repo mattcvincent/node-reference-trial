@@ -228,7 +228,7 @@ Outputs:
     Value: !Ref BaseDomain
     Export:
       Name: !Sub "${AWS::StackName}:BaseDomain"
-  SubDomain:
-    Value: !Ref SubDomain
+  Subdomain:
+    Value: !Ref Subdomain
     Export:
-      Name: !Sub "${AWS::StackName}:SubDomain"
+      Name: !Sub "${AWS::StackName}:Subdomain"
