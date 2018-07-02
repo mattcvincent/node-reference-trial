@@ -7,6 +7,9 @@ Parameters:
   AlarmEmail:
     Type: String
     Description: Email address that should be alerted of Alarms
+  HealthCheckRoute:
+    Type: String
+    Description: An unathenticated endpoint for health check purposes.  Returns 200 if OK.  Example is "/health" or "/hello".
 Resources:
   AlarmTopic: 
     Type: "AWS::SNS::Topic"
@@ -92,4 +95,45 @@ Resources:
       TopicArn: !Ref AlarmTopic
       Protocol: email
       Endpoint: !Ref AlarmEmail
-
+  DNSHealthCheck:
+    Type: "AWS::Route53::HealthCheck"
+    Properties: 
+      HealthCheckConfig:
+        EnableSNI: true
+        FailureThreshold: 3
+        FullyQualifiedDomainName:
+          !Sub
+          - ${Subdomain}.${BaseDomain}
+          - Subdomain:
+                Fn::ImportValue:
+                  Fn::Sub: ${ProductServiceStackName}:Subdomain
+            BaseDomain:
+                Fn::ImportValue:
+                  Fn::Sub: ${ProductServiceStackName}:BaseDomain
+        Inverted: false
+        Port: 443
+        RequestInterval: 30
+        ResourcePath: !Ref HealthCheckRoute
+        Type: "HTTPS"
+  HealthCheckTopic:
+    Type: "AWS::SNS::Topic"
+    Properties: 
+      DisplayName: "Product Services Health Check Topic"
+      Subscription:
+      - Endpoint: !Ref AlarmEmail
+        Protocol: "email"
+  HealthCheckAlarm:
+    Type: "AWS::CloudWatch::Alarm"
+    Properties:
+      AlarmActions:
+        - !Ref HealthCheckTopic
+      ComparisonOperator: "LessThanThreshold"
+      Dimensions:
+      - Name: HealthCheckId
+        Value: !Ref DNSHealthCheck
+      EvaluationPeriods: 1
+      MetricName: "HealthCheckStatus"
+      Namespace: "AWS/Route53"
+      Period: 60
+      Statistic: "Minimum"
+      Threshold: 1.0
