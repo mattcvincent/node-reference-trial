@@ -48,11 +48,26 @@ Resources:
                       ["AWS/ApplicationELB", "HTTPCode_Target_5XX_Count", "LoadBalancer", "${ProductServiceLoadBalancerFullName}", {"label": "Product Service 5xx"}]           
                     ]
                   }
+                },
+                {
+                  "type": "metric",
+                  "width": 24,
+                  "properties": {
+                    "title": "Throttled Requests",
+                    "period": 60,
+                    "stat": "Sum",
+                    "region": "${AWS::Region}",
+                    "metrics": [
+                      ["AWS/DynamoDB", "ThrottledRequests", "TableName", "${ProductServiceTableName}", {"label": "Table Throttled Requests"}]
+                    ]
+                  }
                 }
               ]
             }
           - ProductServiceLoadBalancerFullName: 
               Fn::ImportValue: !Sub "${ProductServiceStackName}:LoadBalancerFullName"
+            ProductServiceTableName:
+              Fn::ImportValue: !Sub "${ProductServiceStackName}:ProductsTable::Id"
   ProductServiceResponseTimeAlarm:
     Type: "AWS::CloudWatch::Alarm"
     Properties:
