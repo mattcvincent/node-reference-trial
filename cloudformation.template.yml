@@ -219,7 +219,7 @@ Outputs:
   ProductsTable:
     Value: !Ref ProductsTable
     Export:
-      Name: "ProductsTable::Id"
+      Name: !Sub "${AWS::StackName}:ProductsTable::Id"
   LoadBalancerFullName:
       Value: !GetAtt LoadBalancer.LoadBalancerFullName
       Export:
