@@ -137,3 +137,98 @@ Resources:
       Period: 60
       Statistic: "Minimum"
       Threshold: 1.0
+  ReadThrottleEventsAlarm:
+    Type: 'AWS::CloudWatch::Alarm'
+    Properties:
+      AlarmDescription: 'Reads are throttled. Lower ReadCapacityUnitsUtilizationTarget or increase MaxReadCapacityUnits.'
+      Namespace: 'AWS/DynamoDB'
+      MetricName: ReadThrottleEvents
+      Dimensions:
+      - Name: TableName
+        Value:
+          Fn::ImportValue: !Sub "${ProductServiceStackName}:ProductsTable::Id"
+      Statistic: Sum
+      Period: 60
+      EvaluationPeriods: 1
+      Threshold: 1
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      AlarmActions:
+      - !Ref AlarmTopic
+      OKActions:
+      - !Ref AlarmTopic
+  WriteThrottleEventsAlarm:
+    Type: 'AWS::CloudWatch::Alarm'
+    Properties:
+      AlarmDescription: 'Writes are throttled. Lower WriteCapacityUnitsUtilizationTarget or increase MaxWriteCapacityUnits.'
+      Namespace: 'AWS/DynamoDB'
+      MetricName: WriteThrottleEvents
+      Dimensions:
+      - Name: TableName
+        Value:
+          Fn::ImportValue: !Sub "${ProductServiceStackName}:ProductsTable::Id"
+      Statistic: Sum
+      Period: 60
+      EvaluationPeriods: 1
+      Threshold: 1
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      AlarmActions:
+      - !Ref AlarmTopic
+      OKActions:
+      - !Ref AlarmTopic
+  ThrottledRequestsEventsAlarm:
+    Type: 'AWS::CloudWatch::Alarm'
+    Properties:
+      AlarmDescription: 'Batch requests are throttled. Lower {Read/Write}CapacityUnitsUtilizationTarget or increase Max{Read/Write}CapacityUnits.'
+      Namespace: 'AWS/DynamoDB'
+      MetricName: ThrottledRequests
+      Dimensions:
+      - Name: TableName
+        Value:
+          Fn::ImportValue: !Sub "${ProductServiceStackName}:ProductsTable::Id"
+      Statistic: Sum
+      Period: 60
+      EvaluationPeriods: 1
+      Threshold: 1
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      AlarmActions:
+      - !Ref AlarmTopic
+      OKActions:
+      - !Ref AlarmTopic
+  UserErrorsAlarm:
+    Type: 'AWS::CloudWatch::Alarm'
+    Properties:
+      AlarmDescription: 'User errors'
+      Namespace: 'AWS/DynamoDB'
+      MetricName: UserErrors
+      Dimensions:
+      - Name: TableName
+        Value:
+          Fn::ImportValue: !Sub "${ProductServiceStackName}:ProductsTable::Id"
+      Statistic: Sum
+      Period: 60
+      EvaluationPeriods: 1
+      Threshold: 1
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      AlarmActions:
+      - !Ref AlarmTopic
+      OKActions:
+      - !Ref AlarmTopic
+  SystemErrorsAlarm:
+    Type: 'AWS::CloudWatch::Alarm'
+    Properties:
+      AlarmDescription: 'System errors'
+      Namespace: 'AWS/DynamoDB'
+      MetricName: SystemErrors
+      Dimensions:
+      - Name: TableName
+        Value:
+          Fn::ImportValue: !Sub "${ProductServiceStackName}:ProductsTable::Id"
+      Statistic: Sum
+      Period: 60
+      EvaluationPeriods: 1
+      Threshold: 1
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      AlarmActions:
+      - !Ref AlarmTopic
+      OKActions:
+      - !Ref AlarmTopic
