@@ -121,6 +121,8 @@ Resources:
               Value: !Ref ProductsTable
             - Name: AWS_REGION
               Value: !Ref "AWS::Region"
+            - Name: PRODUCTS_SNAPSHOT_TABLE_NAME
+              Value: !Ref ProductsSnapshotTable
   Service: 
     Type: "AWS::ECS::Service"
     Properties: 
@@ -213,6 +215,22 @@ Resources:
       ProvisionedThroughput: 
         ReadCapacityUnits: 1
         WriteCapacityUnits: 1
+  ProductsSnapshotTable:
+    Type: "AWS::DynamoDB::Table"
+    Properties:
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+        - AttributeName: lastModified
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: "HASH"
+        - AttributeName: lastModified
+          KeyType: "RANGE" #note the keyType. This allows us to search for snapshots "as-of" a particular date and to order our snapshots
+      ProvisionedThroughput: 
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1
   WriteCapacityScalableTarget:
     Type: "AWS::ApplicationAutoScaling::ScalableTarget"
     Properties:
@@ -286,6 +304,54 @@ Resources:
       PolicyName: ReadAutoScalingPolicy
       PolicyType: TargetTrackingScaling
       ScalingTargetId: !Ref ReadCapacityScalableTarget
+      TargetTrackingScalingPolicyConfiguration:
+        TargetValue: 50.0
+        ScaleInCooldown: 60
+        ScaleOutCooldown: 60
+        PredefinedMetricSpecification:
+          PredefinedMetricType: DynamoDBReadCapacityUtilization
+  SnapshotWriteCapacityScalableTarget:
+    Type: "AWS::ApplicationAutoScaling::ScalableTarget"
+    Properties:
+      MaxCapacity: 5
+      MinCapacity: 1
+      ResourceId: !Join
+        - /
+        - - table
+          - !Ref ProductsSnapshotTable
+      RoleARN: !GetAtt ScalingRole.Arn
+      ScalableDimension: dynamodb:table:WriteCapacityUnits
+      ServiceNamespace: dynamodb
+  SnapshotReadCapacityScalableTarget:
+    Type: "AWS::ApplicationAutoScaling::ScalableTarget"
+    Properties:
+      MaxCapacity: 5
+      MinCapacity: 1
+      ResourceId: !Join
+        - /
+        - - table
+          - !Ref ProductsSnapshotTable
+      RoleARN: !GetAtt ScalingRole.Arn
+      ScalableDimension: dynamodb:table:ReadCapacityUnits
+      ServiceNamespace: dynamodb
+  SnapshotWriteScalingPolicy:
+    Type: "AWS::ApplicationAutoScaling::ScalingPolicy"
+    Properties:
+      PolicyName: WriteAutoScalingPolicy
+      PolicyType: TargetTrackingScaling
+      ScalingTargetId: !Ref SnapshotWriteCapacityScalableTarget
+      TargetTrackingScalingPolicyConfiguration:
+        TargetValue: 50.0
+        ScaleInCooldown: 60
+        ScaleOutCooldown: 60
+        PredefinedMetricSpecification:
+          PredefinedMetricType: DynamoDBWriteCapacityUtilization
+  SnapshotReadScalingPolicy:
+    Type: "AWS::ApplicationAutoScaling::ScalingPolicy"
+    Properties:
+      PolicyName: ReadAutoScalingPolicy
+      PolicyType: TargetTrackingScaling
+      ScalingTargetId: !Ref SnapshotReadCapacityScalableTarget
       TargetTrackingScalingPolicyConfiguration:
         TargetValue: 50.0
         ScaleInCooldown: 60

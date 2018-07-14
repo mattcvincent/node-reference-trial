@@ -133,12 +133,34 @@ describe('products', function () {
 
         describe('patch test fails', function () {
             beforeEach(function() {
+                this.snapshotProduct = (product) => Promise.resolve();
+                    spyOn(this, 'snapshotProduct');
                 this.getResponse.Item.name = 'Apple';
                 this.context.request.body = [
                     {op: 'replace', path: '/name', value: 'Grape'},
                     {op: 'test', path: '/name', value: 'Orange'}
                 ];
+                this.updateProduct = proxyquire('./updateProduct', {
+                    'aws-sdk': {
+                        DynamoDB: {
+                            DocumentClient: function() {
+                                return documentClient;
+                            }
+                        }
+                    },
+                    './validateProduct': this.validateProduct,
+                    './snapshots/snapshotProduct': this.snapshotProduct
+                });
             });
+
+              it('should pass the unpatched product to snapshotProduct', async function () {
+                  await this.updateProduct(this.context);
+
+                  const expectedProduct = {
+                      lastModified: '2018-01-02T03:04:05.000Z'
+                  };
+                  expect(this.snapshotProduct.calls.argsFor(0)[0]).toEqual(expectedProduct);
+              });
 
             it('should return a 409 status', async function () {
                 await this.updateProduct(this.context);
