@@ -33,6 +33,9 @@ describe('products', function () {
             this.validateProduct = (product) => undefined;
             spyOn(this, 'validateProduct').and.callThrough();
 
+            this.snapshotProduct = (product) => Promise.resolve();
+            spyOn(this, 'snapshotProduct');
+
             this.updateProduct = proxyquire('./updateProduct', {
                 'aws-sdk': {
                     DynamoDB: {
@@ -41,6 +44,7 @@ describe('products', function () {
                         }
                     }
                 },
+                './snapshots/snapshotProduct': this.snapshotProduct,
                 './validateProduct': this.validateProduct                
             });
         });
@@ -101,6 +105,15 @@ describe('products', function () {
             expect(this.documentClient.put.calls.argsFor(0)[0].ExpressionAttributeValues).toEqual(expectedValues);
         });
 
+        it('should pass the unpatched product to snapshotProduct', async function () {
+            await this.updateProduct(this.context);
+
+            const expectedProduct = {
+                lastModified: '2018-01-02T03:04:05.000Z'
+            };
+            expect(this.snapshotProduct.calls.argsFor(0)[0]).toEqual(expectedProduct);
+        });
+
         it('should return a 400 status code if the patch document is invalid', async function () {
             this.context.request.body[0].op = 'bad';
             await this.updateProduct(this.context);
@@ -140,27 +153,7 @@ describe('products', function () {
                     {op: 'replace', path: '/name', value: 'Grape'},
                     {op: 'test', path: '/name', value: 'Orange'}
                 ];
-                this.updateProduct = proxyquire('./updateProduct', {
-                    'aws-sdk': {
-                        DynamoDB: {
-                            DocumentClient: function() {
-                                return documentClient;
-                            }
-                        }
-                    },
-                    './validateProduct': this.validateProduct,
-                    './snapshots/snapshotProduct': this.snapshotProduct
-                });
             });
-
-              it('should pass the unpatched product to snapshotProduct', async function () {
-                  await this.updateProduct(this.context);
-
-                  const expectedProduct = {
-                      lastModified: '2018-01-02T03:04:05.000Z'
-                  };
-                  expect(this.snapshotProduct.calls.argsFor(0)[0]).toEqual(expectedProduct);
-              });
 
             it('should return a 409 status', async function () {
                 await this.updateProduct(this.context);
