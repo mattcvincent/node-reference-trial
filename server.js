@@ -21,6 +21,7 @@ function buildRouter() {
     router.patch('/products/:id', require('./products/updateProduct'));
     router.post('/products', require('./products/createProduct'));
     router.get('/products', require('./products/listProducts'));
+    router.get('/products/:id/snapshots', require('./products/snapshots/listSnapshots'));
     return router;
 }
 
