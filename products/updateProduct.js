@@ -81,6 +81,10 @@ module.exports = async function(ctx) {
     const product = await loadProduct(id, ctx.segment);
     await snapshotProduct({...product});
     const lastModified = product.lastModified;
+    if (product.deleted) {
+        ctx.status = 410;
+        return;
+    }
 
     const response = validatePatchDocument(patchDocument) ||
         applyPatchDocument(product, patchDocument) ||

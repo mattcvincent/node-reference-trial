@@ -30,7 +30,8 @@ module.exports = async function getProductList(ctx) {
         Segment: ctx.segment,
         TableName: productsTableName,
         Limit: 25,
-        ExclusiveStartKey: getExclusiveStartKey(ctx)
+        ExclusiveStartKey: getExclusiveStartKey(ctx),
+        FilterExpression: 'attribute_not_exists(deleted)'
     }).promise();
 
     addLinkHeaderIfNeeded(ctx, scanOutput.LastEvaluatedKey);

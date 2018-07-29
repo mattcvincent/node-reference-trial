@@ -38,6 +38,12 @@ describe('products', function () {
             });
         });
 
+        it('should filter out deleted items', async function() {
+            await this.listProducts(this.context);
+            expect(this.documentClient.scan.calls.argsFor(0)[0].FilterExpression)
+                .toEqual('attribute_not_exists(deleted)');
+        });
+
         it('should pass the correct TableName to documentClient.scan', async function () {
             await this.listProducts(this.context);
             expect(this.documentClient.scan.calls.argsFor(0)[0].TableName).toEqual('Products');
